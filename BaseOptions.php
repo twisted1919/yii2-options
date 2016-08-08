@@ -46,17 +46,18 @@ class BaseOptions extends Component
             $command->update($this->tableName, [
                 'value'         => is_string($value) ? $value : serialize($value),
                 'serialized'    => (int)(!is_string($value)),
-                'last_updated'  => new Expression('NOW()')
-            ], '`category` = :c AND `key`=:k', [':c' => $category, ':k' => $key]);
+                'updated_at'    => new Expression('NOW()')
+            ], '`category` = :c AND `key` = :k', [':c' => $category, ':k' => $key]
+            )->execute();
         } else {
             $command->insert($this->tableName, [
                 'category'      => $category,
                 'key'           => $key,
                 'value'         => is_string($value) ? $value : serialize($value),
                 'serialized'    => (int)(!is_string($value)),
-                'date_added'    => new Expression('NOW()'),
-                'last_updated'  => new Expression('NOW()')
-            ]);
+                'created_at'    => new Expression('NOW()'),
+                'updated_at'    => new Expression('NOW()')
+            ])->execute();
         }
         $this->options[$_key] = $value;
         return $this;
@@ -88,7 +89,12 @@ class BaseOptions extends Component
 
         list($category, $key) = $this->getCategoryAndKey($key);
 
-        db()->createCommand()->delete($this->tableName, '`category` = :c AND `key` = :k', [':c' => $category, ':k' => $key]);
+        db()->createCommand()->delete(
+            $this->tableName, 
+            '`category` = :c AND `key` = :k', 
+            [':c' => $category, ':k' => $key]
+        )->execute();
+        
         return true;
     }
 
@@ -102,8 +108,8 @@ class BaseOptions extends Component
             unset($this->categories[$category]);
         }
 
-        db()->createCommand()->delete($this->tableName, '`category` = :c', [':c' => $category]);
-        db()->createCommand()->delete($this->tableName, '`category` LIKE :c', [':c' => $category . '%']);
+        db()->createCommand()->delete($this->tableName, '`category` = :c', [':c' => $category])->execute();
+        db()->createCommand()->delete($this->tableName, '`category` LIKE :c', [':c' => $category . '%'])->execute();
 
         foreach ($this->options as $key => $value) {
             if (strpos($key, $category) === 0) {
@@ -126,8 +132,11 @@ class BaseOptions extends Component
             return $this;
         }
         
-        $command = db()->createCommand('SELECT `category`, `key`, `value`, `serialized` FROM `'.$this->tableName.'` WHERE `category` = :c');
-        $rows = $command->queryAll(true, [':c' => $category]);
+        $command = db()->createCommand(
+            'SELECT `category`, `key`, `value`, `serialized` FROM `'.$this->tableName.'` WHERE `category` = :c'
+        , [':c' => $category]);
+        
+        $rows = $command->queryAll();
 
         foreach ($rows as $row) {
             $this->options[$row['category'].'.'.$row['key']] = !$row['serialized'] ? $row['value'] : unserialize($row['value']);
