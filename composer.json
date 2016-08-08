@@ -1,0 +1,26 @@
+{
+  "name": "twisted1919/yii2-options",
+  "type": "yii2-extension",
+  "description": "It helps to manage your app options/settings",
+  "keywords": ["yii2", "options", "settings"],
+  "license": "BSD-3-Clause",
+  "support": {
+    "issues": "https://github.com/twisted1919/yii2-options/issues",
+    "source": "https://github.com/twisted1919/yii2-options"
+  },
+  "authors": [
+    {
+      "name": "twisted1919"
+    }
+  ],
+  "require": {
+    "php": ">=5.4",
+    "yiisoft/yii2": "*",
+    "twisted1919/yii2-shortcut-functions": "dev-master"
+  },
+  "autoload": {
+    "psr-4": {
+      "twisted1919\\options\\": ""
+    }
+  }
+}
