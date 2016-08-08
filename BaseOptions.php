@@ -10,12 +10,12 @@ class BaseOptions extends Component
     /**
      * @var string
      */
-    public $defaultCategory = 'misc';
+    protected $defaultCategory = 'misc';
 
     /**
      * @var string
      */
-    public $tableName = '{{%option}}';
+    protected $tableName = '{{%option}}';
 
     /**
      * @var array
@@ -142,7 +142,7 @@ class BaseOptions extends Component
      * @param $key
      * @return array
      */
-    public function getCategoryAndKey($key)
+    protected function getCategoryAndKey($key)
     {
         $category = $this->defaultCategory;
 
