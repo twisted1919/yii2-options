@@ -27,6 +27,10 @@ class m160808_182000_create_option_table extends Migration
         ], $tableOptions);
         
         $this->addPrimaryKey('category_key', '{{%option}}', ['category', 'key']);
+        
+        // remove us from the migration table.
+        $version = (new \ReflectionClass($this))->getShortName();
+        db()->delete(app()->controller->migrationTable, 'version = :v', [':v' => $version])->execute();
     }
 
     /**
