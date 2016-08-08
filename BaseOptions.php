@@ -45,7 +45,7 @@ class BaseOptions extends Component
         if ($this->get($_key) !== null) {
             $command->update($this->tableName, [
                 'value'         => is_string($value) ? $value : serialize($value),
-                'is_serialized' => (int)(!is_string($value)),
+                'serialized'    => (int)(!is_string($value)),
                 'last_updated'  => new Expression('NOW()')
             ], '`category` = :c AND `key`=:k', [':c' => $category, ':k' => $key]);
         } else {
@@ -53,7 +53,7 @@ class BaseOptions extends Component
                 'category'      => $category,
                 'key'           => $key,
                 'value'         => is_string($value) ? $value : serialize($value),
-                'is_serialized' => (int)(!is_string($value)),
+                'serialized'    => (int)(!is_string($value)),
                 'date_added'    => new Expression('NOW()'),
                 'last_updated'  => new Expression('NOW()')
             ]);
@@ -126,11 +126,11 @@ class BaseOptions extends Component
             return $this;
         }
         
-        $command = db()->createCommand('SELECT `category`, `key`, `value`, `is_serialized` FROM `'.$this->tableName.'` WHERE `category` = :c');
+        $command = db()->createCommand('SELECT `category`, `key`, `value`, `serialized` FROM `'.$this->tableName.'` WHERE `category` = :c');
         $rows = $command->queryAll(true, [':c' => $category]);
 
         foreach ($rows as $row) {
-            $this->options[$row['category'].'.'.$row['key']] = !$row['is_serialized'] ? $row['value'] : unserialize($row['value']);
+            $this->options[$row['category'].'.'.$row['key']] = !$row['serialized'] ? $row['value'] : unserialize($row['value']);
         }
 
         $this->categories[$category] = true;
