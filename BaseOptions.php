@@ -59,7 +59,7 @@ class BaseOptions extends Component
                 'updated_at'    => new Expression('NOW()')
             ])->execute();
         }
-        $this->options[$_key] = $value;
+        $this->options[$category . '.' . $key] = $value;
         return $this;
     }
 

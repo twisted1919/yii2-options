@@ -26,7 +26,7 @@ app()->options->set($key, $value);
 
 ###### GET
 ```php
-app()->options->get($key, defaultValue = null);
+app()->options->get($key, $defaultValue = null);
 ```
 
 ###### REMOVE
