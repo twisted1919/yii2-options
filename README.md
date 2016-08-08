@@ -18,18 +18,20 @@
 ```
 
 ### Api:  
-
+Please note that `options()` is added by `twisted1919/yii2-shortcut-functions` automatically.  
+  
+  
 ###### SET
 ```php
-app()->options->set($key, $value);
+options()->set($key, $value);
 ```
 
 ###### GET
 ```php
-app()->options->get($key, $defaultValue = null);
+options()->get($key, $defaultValue = null);
 ```
 
 ###### REMOVE
 ```php
-app()->options->remove($key);
+options()->remove($key);
 ```
