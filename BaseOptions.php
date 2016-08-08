@@ -133,7 +133,7 @@ class BaseOptions extends Component
         }
         
         $command = db()->createCommand(
-            'SELECT `category`, `key`, `value`, `serialized` FROM `'.$this->tableName.'` WHERE `category` = :c'
+            'SELECT `category`, `key`, `value`, `serialized` FROM '.$this->tableName.' WHERE `category` = :c'
         , [':c' => $category]);
         
         $rows = $command->queryAll();
