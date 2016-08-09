@@ -16,7 +16,7 @@
   "require": {
     "php": ">=5.4",
     "yiisoft/yii2": "*",
-    "twisted1919/yii2-shortcut-functions": "dev-master"
+    "twisted1919/yii2-shortcut-functions": "*"
   },
   "autoload": {
     "psr-4": {
