@@ -1,6 +1,7 @@
 <?php
 
 use yii\db\Migration;
+use yii\base\Controller;
 
 /**
  * Handles the creation for table `option`.
@@ -29,8 +30,10 @@ class m160808_182000_create_option_table extends Migration
         $this->addPrimaryKey('category_key', '{{%option}}', ['category', 'key']);
         
         // remove us from the migration table.
-        $version = (new \ReflectionClass($this))->getShortName();
-        db()->delete(app()->controller->migrationTable, 'version = :v', [':v' => $version])->execute();
+        app()->controller->on(Controller::EVENT_AFTER_ACTION, function() {
+            $version = (new \ReflectionClass($this))->getShortName();
+            db()->delete(app()->controller->migrationTable, 'version = :v', [':v' => $version])->execute();
+        });
     }
 
     /**
