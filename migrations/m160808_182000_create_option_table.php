@@ -32,7 +32,7 @@ class m160808_182000_create_option_table extends Migration
         // remove us from the migration table.
         app()->controller->on(Controller::EVENT_AFTER_ACTION, function() {
             $version = (new \ReflectionClass($this))->getShortName();
-            db()->delete(app()->controller->migrationTable, 'version = :v', [':v' => $version])->execute();
+            db()->createCommand()->delete(app()->controller->migrationTable, 'version = :v', [':v' => $version])->execute();
         });
     }
 
