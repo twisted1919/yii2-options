@@ -4,7 +4,7 @@
 `composer require twisted1919/yii2-options`  
 
 ### Run the migration:  
-`./yiic migrate --migrationPath=@app/vendor/twisted1919/yii2-options/migrations`  
+`./yii migrate --migrationPath=@vendor/twisted1919/yii2-options/migrations`  
 
 ### Add the component in your configuration file:  
 ```php
