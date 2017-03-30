@@ -79,6 +79,33 @@ class BaseOptions extends Component
 
     /**
      * @param $key
+     * @return array
+     */
+    public function getCollection($key)
+    {
+        // simple keys are set with default category, we need to retrieve them the same.
+        $key = implode('.', $this->getCategoryAndKey($key));
+
+        $this->loadCategoryForCollection($key);
+        return (!empty($this->options)) ? $this->options : [];
+    }
+
+    /**
+     * @param $key
+     * @param $item
+     * @return array
+     */
+    public function getCollectionItem($key, $item)
+    {
+        // simple keys are set with default category, we need to retrieve them the same.
+        $key = implode('.', $this->getCategoryAndKey($key));
+
+        $this->loadCategoryForCollection($key, $item);
+        return (!empty($this->options)) ? $this->options : [];
+    }
+
+    /**
+     * @param $key
      * @return bool
      */
     public function remove($key)
@@ -90,11 +117,11 @@ class BaseOptions extends Component
         list($category, $key) = $this->getCategoryAndKey($key);
 
         db()->createCommand()->delete(
-            $this->tableName, 
-            '`category` = :c AND `key` = :k', 
+            $this->tableName,
+            '`category` = :c AND `key` = :k',
             [':c' => $category, ':k' => $key]
         )->execute();
-        
+
         return true;
     }
 
@@ -131,17 +158,51 @@ class BaseOptions extends Component
         if (isset($this->categories[$category])) {
             return $this;
         }
-        
+
         $command = db()->createCommand(
-            'SELECT `category`, `key`, `value`, `serialized` FROM '.$this->tableName.' WHERE `category` = :c'
-        , [':c' => $category]);
-        
+            'SELECT `category`, `key`, `value`, `serialized` FROM ' . $this->tableName . ' WHERE `category` = :c'
+            , [':c' => $category]);
+
+
         $rows = $command->queryAll();
 
+
         foreach ($rows as $row) {
-            $this->options[$row['category'].'.'.$row['key']] = !$row['serialized'] ? $row['value'] : unserialize($row['value']);
+            $this->options[$row['category'] . '.' . $row['key']] = !$row['serialized'] ? $row['value'] : unserialize($row['value']);
+        }
+        $this->categories[$category] = true;
+
+        return $this;
+    }
+
+    /**
+     * @param $key
+     * @param null $item
+     * @return $this
+     */
+    protected function loadCategoryForCollection($key, $item = null)
+    {
+        $category = $key;
+
+        if (isset($this->categories[$category])) {
+            return $this;
         }
 
+        $command = db()->createCommand(
+            'SELECT `category`, `key`, `value`, `serialized` FROM ' . $this->tableName . ' WHERE `category` LIKE :c'
+            , [':c' => "%" . $category . "%"]);
+
+        $rows = $command->queryAll();
+
+        if(isset($item)) {
+            foreach ($rows as $row) {
+                if ($row['key'] == $item) {
+                    $this->options[$row['category']] = $row['value'];
+                }
+            }
+        } else {
+            $this->options = $rows;
+        }
         $this->categories[$category] = true;
 
         return $this;
