@@ -31,11 +31,6 @@ options()->set($key, $value);
 options()->get($key, $defaultValue = null);
 ```
 
-###### GET COLLECTION
-```php
-options()->getCollection($key);
-```
-
 ###### GET COLLECTION MULTIPLE ITEMS
 ```php
 options()->getCollectionItem($key, $item = null);

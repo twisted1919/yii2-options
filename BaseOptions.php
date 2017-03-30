@@ -25,6 +25,11 @@ class BaseOptions extends Component
     /**
      * @var array
      */
+    protected $collection = [];
+
+    /**
+     * @var array
+     */
     protected $categories = [];
 
     /**
@@ -79,29 +84,16 @@ class BaseOptions extends Component
 
     /**
      * @param $key
+     * @param null $item
      * @return array
      */
-    public function getCollection($key)
+    public function getCollectionItem($key, $item = null)
     {
         // simple keys are set with default category, we need to retrieve them the same.
         $key = implode('.', $this->getCategoryAndKey($key));
 
-        $this->loadCategoryForCollection($key);
-        return (!empty($this->options)) ? $this->options : [];
-    }
-
-    /**
-     * @param $key
-     * @param $item
-     * @return array
-     */
-    public function getCollectionItem($key, $item)
-    {
-        // simple keys are set with default category, we need to retrieve them the same.
-        $key = implode('.', $this->getCategoryAndKey($key));
-
-        $this->loadCategoryForCollection($key, $item);
-        return (!empty($this->options)) ? $this->options : [];
+        $this->loadCategoryForCollectionItem($key, $item);
+        return (!empty($this->collection)) ? $this->collection : [];
     }
 
     /**
@@ -180,30 +172,23 @@ class BaseOptions extends Component
      * @param null $item
      * @return $this
      */
-    protected function loadCategoryForCollection($key, $item = null)
+    protected function loadCategoryForCollectionItem($key, $item = null)
     {
         $category = $key;
 
-        if (isset($this->categories[$category])) {
-            return $this;
-        }
-
         $command = db()->createCommand(
-            'SELECT `category`, `key`, `value`, `serialized` FROM ' . $this->tableName . ' WHERE `category` LIKE :c'
-            , [':c' => "%" . $category . "%"]);
+            'SELECT `category`, `key`, `value`, `serialized` FROM ' . $this->tableName . ' WHERE `category` LIKE :c AND `key` = :k'
+            , [
+                ':c' => "%" . $category . "%",
+                ':k' => $item
+            ]
+        );
 
         $rows = $command->queryAll();
 
-        if(isset($item)) {
-            foreach ($rows as $row) {
-                if ($row['key'] == $item) {
-                    $this->options[$row['category']] = $row['value'];
-                }
-            }
-        } else {
-            $this->options = $rows;
+        foreach ($rows as $row) {
+            $this->collection[$row['category']] = !$row['serialized'] ? $row['value'] : unserialize($row['value']);
         }
-        $this->categories[$category] = true;
 
         return $this;
     }
