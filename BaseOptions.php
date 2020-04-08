@@ -28,8 +28,8 @@ class BaseOptions extends Component
     protected $categories = [];
 
     /**
-     * @param $key
-     * @param $value
+     * @param string $key
+     * @param mixed $value
      * @return $this
      */
     public function set($key, $value)
@@ -64,9 +64,9 @@ class BaseOptions extends Component
     }
 
     /**
-     * @param $key
-     * @param null $defaultValue
-     * @return mixed|null
+     * @param string $key
+     * @param mixed $defaultValue
+     * @return mixed
      */
     public function get($key, $defaultValue = null)
     {
@@ -78,7 +78,7 @@ class BaseOptions extends Component
     }
 
     /**
-     * @param $key
+     * @param string $key
      * @return bool
      */
     public function remove($key)
@@ -99,7 +99,7 @@ class BaseOptions extends Component
     }
 
     /**
-     * @param $category
+     * @param string $category
      * @return bool
      */
     public function removeCategory($category)
@@ -121,7 +121,7 @@ class BaseOptions extends Component
     }
 
     /**
-     * @param $key
+     * @param string $key
      * @return $this
      */
     protected function loadCategory($key)
@@ -148,7 +148,7 @@ class BaseOptions extends Component
     }
 
     /**
-     * @param $key
+     * @param string $key
      * @return array
      */
     protected function getCategoryAndKey($key)
